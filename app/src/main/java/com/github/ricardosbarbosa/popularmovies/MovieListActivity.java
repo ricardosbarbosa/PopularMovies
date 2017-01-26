@@ -1,6 +1,7 @@
 package com.github.ricardosbarbosa.popularmovies;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -8,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -80,10 +82,30 @@ public class MovieListActivity extends AppCompatActivity {
     }
 
     private void updateMovies() {
-        FetchMoviewDbTask moviewDbTask = new FetchMoviewDbTask();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String filter = sharedPreferences.getString(getString(R.string.pref_filter_key), getString(R.string.pref_filter_default));
-        moviewDbTask.execute(filter);
+        Context context = MovieListActivity.this;
+
+        //Se há	conexão disponível
+        if (NetworkUtils.isNetworkConnected(context)) {
+            //Aqui fazemos a chamada ao servico responsavel por carregar os filmes de acordo com as preferencias do usuario
+            FetchMoviewDbTask moviewDbTask = new FetchMoviewDbTask();
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            String filter = sharedPreferences.getString(getString(R.string.pref_filter_key), getString(R.string.pref_filter_default));
+            moviewDbTask.execute(filter);
+        } else {
+            //Se não há	conexão disponível, exibe a mensagem
+            View view = this.findViewById(R.id.movie_list);
+            Snackbar snackbar = Snackbar.make(view, getString(R.string.no_internet_connection), Snackbar.LENGTH_LONG);
+            snackbar.setAction(getString(R.string.retry), new View.OnClickListener() {
+                //Ao clicar na snackbar, uma nova tentativa de atualizar a lista é efetuada :-)
+                @Override
+                public void onClick(View view) {
+                    updateMovies();
+                }
+            });
+            snackbar.show();
+        }
+
+
     }
 
 
