@@ -2,6 +2,7 @@ package com.github.ricardosbarbosa.popularmovies.helpers;
 
 import com.github.ricardosbarbosa.popularmovies.models.Movie;
 import com.github.ricardosbarbosa.popularmovies.models.MovieReview;
+import com.github.ricardosbarbosa.popularmovies.models.MovieTrailer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -75,5 +76,37 @@ public class MovieProcessor {
         }
 
         return resultStrs;
+    }
+
+    public static List<MovieTrailer> getMovieTrailersDataFromJson(String jsonStr)  throws JSONException{
+        // These are the names of the JSON objects that need to be extracted.
+        final String LIST = "results";
+
+        final String ID = "id";
+        final String KEY = "key";
+        final String NAME = "name";
+        final String SITE = "site";
+        final String TYPE = "type";
+
+        JSONObject moviesJson = new JSONObject(jsonStr);
+        JSONArray moviesTrailersArray = moviesJson.getJSONArray(LIST);
+
+        List<MovieTrailer> movieTrailers = new ArrayList<MovieTrailer>();
+        for(int i = 0; i < moviesTrailersArray.length(); i++) {
+
+            // Get the JSON object representing the movie
+            JSONObject movieJson = moviesTrailersArray.getJSONObject(i);
+
+            String id = movieJson.optString(ID);
+            String key = movieJson.optString(KEY);
+            String name = movieJson.optString(NAME);
+            String site = movieJson.optString(SITE);
+            String type = movieJson.optString(TYPE);
+
+            MovieTrailer movieTrailer = new MovieTrailer(id, key, name, site, type);
+            movieTrailers.add(movieTrailer);
+        }
+
+        return movieTrailers;
     }
 }

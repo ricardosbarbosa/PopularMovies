@@ -39,6 +39,12 @@
         android:layout_height="wrap_content"
         android:text="Overview"/>
 
+    <android.support.v7.widget.RecyclerView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/list_view_trailers" />
+
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

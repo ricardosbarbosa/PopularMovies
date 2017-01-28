@@ -17,11 +17,14 @@ import com.github.ricardosbarbosa.popularmovies.R;
 import com.github.ricardosbarbosa.popularmovies.activities.MovieDetailActivity;
 import com.github.ricardosbarbosa.popularmovies.activities.MovieListActivity;
 import com.github.ricardosbarbosa.popularmovies.adapters.MovieReviewAdapter;
+import com.github.ricardosbarbosa.popularmovies.adapters.MovieTrailerAdapter;
 import com.github.ricardosbarbosa.popularmovies.helpers.NetworkUtils;
 import com.github.ricardosbarbosa.popularmovies.interfaces.AsyncTaskDelegate;
 import com.github.ricardosbarbosa.popularmovies.models.Movie;
 import com.github.ricardosbarbosa.popularmovies.models.MovieReview;
+import com.github.ricardosbarbosa.popularmovies.models.MovieTrailer;
 import com.github.ricardosbarbosa.popularmovies.sync.MovieReviewsService;
+import com.github.ricardosbarbosa.popularmovies.sync.MovieTrailersService;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -58,14 +61,19 @@ public class MovieDetailFragment extends Fragment implements AsyncTaskDelegate {
             }
 
             if (NetworkUtils.isNetworkConnected(getContext())) {
-                MovieReviewsService movieReviewsService = new MovieReviewsService(getContext(), this);
                 String idMovie = this.movie.id.toString();
+
+                MovieReviewsService movieReviewsService = new MovieReviewsService(getContext(), this);
                 movieReviewsService.execute(idMovie);
+
+                MovieTrailersService movieTrailersService = new MovieTrailersService(getContext(), this);
+                movieTrailersService.execute(idMovie);
             }
         }
     }
 
     RecyclerView recyclerViewReviews;
+    RecyclerView recyclerViewTrailers;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -85,6 +93,11 @@ public class MovieDetailFragment extends Fragment implements AsyncTaskDelegate {
             MovieReviewAdapter moviewReviewAdapters = new MovieReviewAdapter(getContext(), movie.getReviews());
             recyclerViewReviews.setAdapter(moviewReviewAdapters);
 
+            //trailes
+            recyclerViewTrailers = (RecyclerView) rootView.findViewById(R.id.list_view_trailers);
+            recyclerViewTrailers.setLayoutManager(new LinearLayoutManager(getContext()));
+            MovieTrailerAdapter movieTrailerAdapter = new MovieTrailerAdapter(getContext(), movie.getTrailers());
+            recyclerViewTrailers.setAdapter(movieTrailerAdapter);
 
         }
 
@@ -95,13 +108,26 @@ public class MovieDetailFragment extends Fragment implements AsyncTaskDelegate {
     @Override
     public void processFinish(Object output) {
         if(output != null){
-            List<MovieReview> movieReviews = (List<MovieReview>) output;
 
-            this.movie.setReviews(movieReviews);
-            MovieReviewAdapter moviewReviewAdapters = (MovieReviewAdapter) recyclerViewReviews.getAdapter();
-            moviewReviewAdapters.swap(movieReviews);
-//            moviewReviewAdapters.notifyDataSetChanged();
+            List list = (List) output;
 
+            if (!list.isEmpty()) {
+                if (MovieReview.class.isInstance(list.iterator().next()) ) {
+                    List<MovieReview> movieReviews = (List<MovieReview>) output;
+
+                    this.movie.setReviews(movieReviews);
+                    MovieReviewAdapter moviewReviewAdapters = (MovieReviewAdapter) recyclerViewReviews.getAdapter();
+                    moviewReviewAdapters.swap(movieReviews);
+                }
+
+                if (MovieTrailer.class.isInstance(list.iterator().next())) {
+                    List<MovieTrailer> movieTrailers = (List<MovieTrailer>) output;
+
+                    this.movie.setTrailers(movieTrailers);
+                    MovieTrailerAdapter movieTrailerAdapter = (MovieTrailerAdapter) recyclerViewTrailers.getAdapter();
+                    movieTrailerAdapter.swap(movieTrailers);
+                }
+            }
 
         }else{
             Toast.makeText(getContext(), R.string.no_internet_connection, Toast.LENGTH_LONG).show();

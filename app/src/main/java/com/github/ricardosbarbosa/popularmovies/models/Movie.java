@@ -21,6 +21,7 @@ public class Movie implements Parcelable{
     public final String releaseDate;
 
     private List<MovieReview> reviews;
+    private List<MovieTrailer> trailers;
 
     public Movie(Integer id, String overview, String title, Double rating, String posterPath, String releaseDate) {
         this.id = id;
@@ -29,6 +30,7 @@ public class Movie implements Parcelable{
         this.rating = rating;
         this.posterPath = posterPath;
         this.releaseDate = releaseDate;
+        this.trailers = new ArrayList<MovieTrailer>();
     }
 
     private Movie(Parcel in){
@@ -40,6 +42,7 @@ public class Movie implements Parcelable{
         this.releaseDate = in.readString();
 
         this.reviews = new ArrayList<MovieReview>();
+        this.trailers = new ArrayList<MovieTrailer>();
     }
 
     public List<MovieReview> getReviews() {
@@ -48,6 +51,14 @@ public class Movie implements Parcelable{
 
     public void setReviews(List<MovieReview> reviews) {
         this.reviews = reviews;
+    }
+
+    public List<MovieTrailer> getTrailers() {
+        return trailers;
+    }
+
+    public void setTrailers(List<MovieTrailer> trailers) {
+        this.trailers = trailers;
     }
 
     public String getFullPosterPath() {
