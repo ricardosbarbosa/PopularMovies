@@ -1,4 +1,4 @@
-package com.github.ricardosbarbosa.popularmovies;
+package com.github.ricardosbarbosa.popularmovies.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +17,13 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.github.ricardosbarbosa.popularmovies.interfaces.AsyncTaskDelegate;
+import com.github.ricardosbarbosa.popularmovies.sync.FetchMoviewDbTask;
+import com.github.ricardosbarbosa.popularmovies.models.Movie;
+import com.github.ricardosbarbosa.popularmovies.adapters.MovieAdapter;
+import com.github.ricardosbarbosa.popularmovies.helpers.NetworkUtils;
+import com.github.ricardosbarbosa.popularmovies.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +35,7 @@ import java.util.List;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class MovieListActivity extends AppCompatActivity implements AsyncTaskDelegate{
+public class MovieListActivity extends AppCompatActivity implements AsyncTaskDelegate {
 
     private ArrayAdapter<Movie> arrayAdapter;
 

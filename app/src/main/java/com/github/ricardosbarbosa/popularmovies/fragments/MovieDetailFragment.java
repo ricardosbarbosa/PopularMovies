@@ -1,4 +1,4 @@
-package com.github.ricardosbarbosa.popularmovies;
+package com.github.ricardosbarbosa.popularmovies.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -10,6 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.ricardosbarbosa.popularmovies.models.Movie;
+import com.github.ricardosbarbosa.popularmovies.R;
+import com.github.ricardosbarbosa.popularmovies.activities.MovieDetailActivity;
+import com.github.ricardosbarbosa.popularmovies.activities.MovieListActivity;
 import com.squareup.picasso.Picasso;
 
 /**

@@ -1,4 +1,4 @@
-package com.github.ricardosbarbosa.popularmovies;
+package com.github.ricardosbarbosa.popularmovies.activities;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

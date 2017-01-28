@@ -1,4 +1,6 @@
-package com.github.ricardosbarbosa.popularmovies;
+package com.github.ricardosbarbosa.popularmovies.helpers;
+
+import com.github.ricardosbarbosa.popularmovies.models.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;

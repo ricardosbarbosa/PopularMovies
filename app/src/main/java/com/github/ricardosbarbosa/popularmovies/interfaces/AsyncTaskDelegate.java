@@ -1,4 +1,4 @@
-package com.github.ricardosbarbosa.popularmovies;
+package com.github.ricardosbarbosa.popularmovies.interfaces;
 
 /**
  * Created by ricardobarbosa on 27/01/17.

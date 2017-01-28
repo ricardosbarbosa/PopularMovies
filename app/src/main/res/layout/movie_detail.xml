@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:textIsSelectable="true"
-        tools:context="com.github.ricardosbarbosa.popularmovies.MovieDetailFragment"
+        tools:context=".fragments.MovieDetailFragment"
         android:text="Titulo"/>
 
     <ImageView
@@ -38,6 +38,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Overview"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/listViewTrailers" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/listViewReviews"
+        android:layout_gravity="center_horizontal" />
 
 </LinearLayout>
 

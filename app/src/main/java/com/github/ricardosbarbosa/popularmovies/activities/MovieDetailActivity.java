@@ -1,4 +1,4 @@
-package com.github.ricardosbarbosa.popularmovies;
+package com.github.ricardosbarbosa.popularmovies.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+
+import com.github.ricardosbarbosa.popularmovies.models.Movie;
+import com.github.ricardosbarbosa.popularmovies.fragments.MovieDetailFragment;
+import com.github.ricardosbarbosa.popularmovies.R;
 
 /**
  * An activity representing a single Movie detail screen. This

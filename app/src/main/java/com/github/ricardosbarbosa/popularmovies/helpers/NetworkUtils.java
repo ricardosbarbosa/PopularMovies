@@ -1,4 +1,4 @@
-package com.github.ricardosbarbosa.popularmovies;
+package com.github.ricardosbarbosa.popularmovies.helpers;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

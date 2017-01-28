@@ -1,4 +1,4 @@
-package com.github.ricardosbarbosa.popularmovies;
+package com.github.ricardosbarbosa.popularmovies.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
+import com.github.ricardosbarbosa.popularmovies.models.Movie;
+import com.github.ricardosbarbosa.popularmovies.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

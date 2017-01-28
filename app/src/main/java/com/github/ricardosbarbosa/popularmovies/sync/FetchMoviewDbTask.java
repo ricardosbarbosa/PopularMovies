@@ -1,9 +1,15 @@
-package com.github.ricardosbarbosa.popularmovies;
+package com.github.ricardosbarbosa.popularmovies.sync;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.github.ricardosbarbosa.popularmovies.BuildConfig;
+import com.github.ricardosbarbosa.popularmovies.R;
+import com.github.ricardosbarbosa.popularmovies.helpers.MovieProcessor;
+import com.github.ricardosbarbosa.popularmovies.interfaces.AsyncTaskDelegate;
+import com.github.ricardosbarbosa.popularmovies.models.Movie;
 
 import org.json.JSONException;
 

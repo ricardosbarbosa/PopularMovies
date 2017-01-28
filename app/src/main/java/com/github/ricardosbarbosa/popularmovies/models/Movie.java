@@ -1,4 +1,4 @@
-package com.github.ricardosbarbosa.popularmovies;
+package com.github.ricardosbarbosa.popularmovies.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;

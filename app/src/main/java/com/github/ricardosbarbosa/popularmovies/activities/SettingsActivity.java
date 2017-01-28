@@ -1,4 +1,4 @@
-package com.github.ricardosbarbosa.popularmovies;
+package com.github.ricardosbarbosa.popularmovies.activities;
 
 
 import android.content.Context;
@@ -17,6 +17,8 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.MenuItem;
+
+import com.github.ricardosbarbosa.popularmovies.R;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
