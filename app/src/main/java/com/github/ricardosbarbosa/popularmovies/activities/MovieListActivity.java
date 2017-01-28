@@ -18,7 +18,7 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import com.github.ricardosbarbosa.popularmovies.interfaces.AsyncTaskDelegate;
-import com.github.ricardosbarbosa.popularmovies.sync.FetchMoviewDbTask;
+import com.github.ricardosbarbosa.popularmovies.sync.MovieDetailsService;
 import com.github.ricardosbarbosa.popularmovies.models.Movie;
 import com.github.ricardosbarbosa.popularmovies.adapters.MovieAdapter;
 import com.github.ricardosbarbosa.popularmovies.helpers.NetworkUtils;
@@ -67,7 +67,7 @@ public class MovieListActivity extends AppCompatActivity implements AsyncTaskDel
         //Se há	conexão disponível
         if (NetworkUtils.isNetworkConnected(context)) {
             //Aqui fazemos a chamada ao servico responsavel por carregar os filmes de acordo com as preferencias do usuario
-            FetchMoviewDbTask moviewDbTask = new FetchMoviewDbTask(context, this);
+            MovieDetailsService moviewDbTask = new MovieDetailsService(context, this);
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             String filter = sharedPreferences.getString(getString(R.string.pref_filter_key), getString(R.string.pref_filter_default));
             moviewDbTask.execute(filter);

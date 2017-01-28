@@ -6,10 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.github.ricardosbarbosa.popularmovies.BuildConfig;
-import com.github.ricardosbarbosa.popularmovies.R;
-import com.github.ricardosbarbosa.popularmovies.helpers.MovieProcessor;
 import com.github.ricardosbarbosa.popularmovies.interfaces.AsyncTaskDelegate;
-import com.github.ricardosbarbosa.popularmovies.models.Movie;
 
 import org.json.JSONException;
 
@@ -19,33 +16,31 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 
 /**
- * Created by ricardobarbosa on 27/01/17.
+ * Created by ricardobarbosa on 28/01/17.
  */
-public class FetchMoviewDbTask extends AsyncTask<String, Void, List<Movie>> {
+public abstract class MovieAbstractService<S, V, L> extends AsyncTask<S, V, L> {
 
-    private final Context context;
-    private AsyncTaskDelegate delegate = null;
+    protected final Context context;
+    protected AsyncTaskDelegate delegate = null;
 
-    private final String LOG_TAG = FetchMoviewDbTask.class.getSimpleName();
+    protected final String LOG_TAG = this.getClass().getSimpleName();
 
-
-    public FetchMoviewDbTask(Context context, AsyncTaskDelegate responder){
+    public MovieAbstractService(Context context, AsyncTaskDelegate responder){
         this.delegate = responder;
         this.context = context;
     }
 
     @Override
-    protected void onPostExecute(List<Movie> movies) {
-        super.onPostExecute(movies);
+    protected void onPostExecute(L list) {
+        super.onPostExecute(list);
         if(delegate != null)
-            delegate.processFinish(movies);
+            delegate.processFinish(list);
     }
 
     @Override
-    protected List<Movie> doInBackground(String... params) {
+    protected L doInBackground(S... params) {
 
         if (params.length == 0){
             return null;
@@ -56,21 +51,12 @@ public class FetchMoviewDbTask extends AsyncTask<String, Void, List<Movie>> {
         BufferedReader reader = null;
 
         // Will contain the raw JSON response as a string.
-        String moviesJsonStr = null;
+        String moviesDataJsonStr = null;
         try {
 
             final String APPID_PARAM = "api_key";
 
-            final String POPULAR_MOVIE_URL = "http://api.themoviedb.org/3/movie/popular";
-            final String MOST_RATED_MOVIE_URL = "http://api.themoviedb.org/3/movie/top_rated";
-
-            String urlString;
-
-            if (params[0].equals(context.getString(R.string.pref_filter_popular))) {
-                urlString = POPULAR_MOVIE_URL;
-            } else {
-                urlString = MOST_RATED_MOVIE_URL;
-            }
+            String urlString = getMovieUrlService(params);
 
             Uri builtUri = Uri.parse(urlString).buildUpon()
                     .appendQueryParameter(APPID_PARAM, BuildConfig.MOVIE_DB_API_KEY ).build();
@@ -100,8 +86,8 @@ public class FetchMoviewDbTask extends AsyncTask<String, Void, List<Movie>> {
             if (buffer.length() == 0) {
                 return null;
             }
-            moviesJsonStr = buffer.toString();
-            Log.v(LOG_TAG, "Forecast json string: "+moviesJsonStr);
+            moviesDataJsonStr = buffer.toString();
+            Log.v(LOG_TAG, "Videos json string: "+moviesDataJsonStr);
 
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
@@ -120,11 +106,19 @@ public class FetchMoviewDbTask extends AsyncTask<String, Void, List<Movie>> {
         }
 
         try {
-            return MovieProcessor.getMovieDataFromJson(moviesJsonStr);
+            return getMovieDataFromJson(moviesDataJsonStr);
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Error ", e);
             return null;
         }
 
     }
+
+    protected abstract L getMovieDataFromJson(String moviesDataJsonStr) throws JSONException;
+    
+    private String getMovieUrlService(S... params) {
+        return "http://api.themoviedb.org/3/movie" + getMovieDataPath(params);
+    }
+
+    protected abstract String getMovieDataPath(S... params);
 }
