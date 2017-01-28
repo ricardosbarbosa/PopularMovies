@@ -11,14 +11,17 @@
     <string name="pref_filter_default" translatable="false">popular</string>
     <string name="pref_filter_popular" translatable="false">popular</string>
     <string name="pref_filter_top_rated" translatable="false">top_rated</string>
+    <string name="pref_filter_favorites" translatable="false">favorites</string>
 
     <string-array name="pref_filter_entries">
         <item>Popular</item>
         <item>Top Rated</item>
+        <item>Favorites</item>
     </string-array>
     <string-array name="pref_filter_entries_values">
         <item>@string/pref_filter_popular</item>
         <item>@string/pref_filter_top_rated</item>
+        <item>@string/pref_filter_favorites</item>
     </string-array>
     <string name="title_activity_settings">Settings</string>
 
