@@ -1,6 +1,7 @@
 package com.github.ricardosbarbosa.popularmovies.helpers;
 
 import com.github.ricardosbarbosa.popularmovies.models.Movie;
+import com.github.ricardosbarbosa.popularmovies.models.MovieReview;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,4 +50,30 @@ public class MovieProcessor {
         return resultStrs;
     }
 
+    public static List<MovieReview> getMovieReviewsDataFromJson(String jsonStr)    throws JSONException {
+
+        // These are the names of the JSON objects that need to be extracted.
+        final String LIST = "results";
+
+        final String AUTHOR = "author";
+        final String CONTENT = "content";
+
+        JSONObject moviesJson = new JSONObject(jsonStr);
+        JSONArray moviesReviewsArray = moviesJson.getJSONArray(LIST);
+
+        List<MovieReview> resultStrs = new ArrayList<MovieReview>();
+        for(int i = 0; i < moviesReviewsArray.length(); i++) {
+
+            // Get the JSON object representing the movie
+            JSONObject movieJson = moviesReviewsArray.getJSONObject(i);
+
+            String autor = movieJson.optString(AUTHOR);
+            String content = movieJson.optString(CONTENT);
+
+            MovieReview movie = new MovieReview(autor, content);
+            resultStrs.add(movie);
+        }
+
+        return resultStrs;
+    }
 }

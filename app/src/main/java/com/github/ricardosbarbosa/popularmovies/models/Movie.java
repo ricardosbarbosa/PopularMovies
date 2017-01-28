@@ -3,6 +3,9 @@ package com.github.ricardosbarbosa.popularmovies.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Movie implements Parcelable{
 
     public static final String PARCELABLE_KEY = "movie";
@@ -16,6 +19,8 @@ public class Movie implements Parcelable{
     public final Double rating;
     public final String posterPath;
     public final String releaseDate;
+
+    private List<MovieReview> reviews;
 
     public Movie(Integer id, String overview, String title, Double rating, String posterPath, String releaseDate) {
         this.id = id;
@@ -33,6 +38,16 @@ public class Movie implements Parcelable{
         this.rating = in.readDouble();
         this.posterPath = in.readString();
         this.releaseDate = in.readString();
+
+        this.reviews = new ArrayList<MovieReview>();
+    }
+
+    public List<MovieReview> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<MovieReview> reviews) {
+        this.reviews = reviews;
     }
 
     public String getFullPosterPath() {

@@ -39,16 +39,11 @@
         android:layout_height="wrap_content"
         android:text="Overview"/>
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/listViewTrailers" />
-
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/listViewReviews"
-        android:layout_gravity="center_horizontal" />
+        android:orientation="vertical"
+        android:id="@+id/listViewReviews" />
 
 </LinearLayout>
 
