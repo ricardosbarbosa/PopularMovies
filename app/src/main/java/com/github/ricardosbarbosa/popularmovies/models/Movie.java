@@ -30,6 +30,7 @@ public class Movie implements Parcelable{
         this.rating = rating;
         this.posterPath = posterPath;
         this.releaseDate = releaseDate;
+        this.reviews = new ArrayList<MovieReview>();
         this.trailers = new ArrayList<MovieTrailer>();
     }
 
