@@ -40,7 +40,6 @@ public class FetchMoviewDbTask extends AsyncTask<String, Void, List<Movie>> {
     @Override
     protected void onPostExecute(List<Movie> movies) {
         super.onPostExecute(movies);
-        super.onPostExecute(movies);
         if(delegate != null)
             delegate.processFinish(movies);
     }
