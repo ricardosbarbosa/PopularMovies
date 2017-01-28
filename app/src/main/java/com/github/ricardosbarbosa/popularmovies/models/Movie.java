@@ -52,8 +52,8 @@ public class Movie implements Parcelable{
 
     public String getFullPosterPath() {
         return baseURL + defaultSize + posterPath;
-
     }
+
     @Override
     public String toString() {
         return title;
@@ -87,4 +87,5 @@ public class Movie implements Parcelable{
         }
 
     };
+
 }

@@ -50,7 +50,7 @@ public class MovieProcessor {
         return resultStrs;
     }
 
-    public static List<MovieReview> getMovieReviewsDataFromJson(String jsonStr)    throws JSONException {
+    public static List<MovieReview> getMovieReviewsDataFromJson(String jsonStr) throws JSONException {
 
         // These are the names of the JSON objects that need to be extracted.
         final String LIST = "results";
