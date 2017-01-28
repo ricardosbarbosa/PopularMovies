@@ -28,8 +28,8 @@ public class MovieDetailsService extends MovieAbstractService<String, Void, List
     @Override
     protected String getMovieDataPath(String... params) {
 
-        final String POPULAR_MOVIE_URL = "http://api.themoviedb.org/3/movie/popular";
-        final String MOST_RATED_MOVIE_URL = "http://api.themoviedb.org/3/movie/top_rated";
+        final String POPULAR_MOVIE_URL = "/popular";
+        final String MOST_RATED_MOVIE_URL = "/top_rated";
 
         String urlString;
 
