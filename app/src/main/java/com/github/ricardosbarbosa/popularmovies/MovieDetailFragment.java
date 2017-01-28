@@ -19,7 +19,6 @@ import com.squareup.picasso.Picasso;
  * on handsets.
  */
 public class MovieDetailFragment extends Fragment {
-    public static final String ARG_MOVIE_ID = "id";
 
     private Movie movie;
 
@@ -35,8 +34,8 @@ public class MovieDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments().containsKey(ARG_MOVIE_ID)) {
-            movie = (Movie) getArguments().getParcelable(ARG_MOVIE_ID);
+        if (getArguments().containsKey(Movie.PARCELABLE_KEY)) {
+            movie = (Movie) getArguments().getParcelable(Movie.PARCELABLE_KEY);
 
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);

@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 public class Movie implements Parcelable{
 
+    public static final String PARCELABLE_KEY = "movie";
+
     final String baseURL = "http://image.tmdb.org/t/p/";
     final String defaultSize = "w185";
 
