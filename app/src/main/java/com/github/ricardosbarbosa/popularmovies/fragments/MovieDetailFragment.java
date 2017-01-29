@@ -61,7 +61,7 @@ public class MovieDetailFragment extends Fragment implements AsyncTaskDelegate {
             }
 
             if (NetworkUtils.isNetworkConnected(getContext())) {
-                String idMovie = this.movie.id.toString();
+                String idMovie = this.movie.moviedb_id.toString();
 
                 MovieReviewsService movieReviewsService = new MovieReviewsService(getContext(), this);
                 movieReviewsService.execute(idMovie);

@@ -3,28 +3,38 @@ package com.github.ricardosbarbosa.popularmovies.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Movie implements Parcelable{
+@Table(name = "Movies")
+public class Movie extends Model implements Parcelable{
 
     public static final String PARCELABLE_KEY = "movie";
 
     final String baseURL = "http://image.tmdb.org/t/p/";
     final String defaultSize = "w185";
 
-    public final Integer id;
-    public final String overview;
-    public final String title;
-    public final Double rating;
-    public final String posterPath;
-    public final String releaseDate;
+    @Column(name = "moviedb_id") public Integer moviedb_id;
+    @Column(name = "overview") public String overview;
+    @Column(name = "title") public String title;
+    @Column(name = "rating") public Double rating;
+    @Column(name = "posterPath") public String posterPath;
+    @Column(name = "releaseDate") public String releaseDate;
+    @Column(name = "favorite")  public boolean favorite = false;
 
     private List<MovieReview> reviews;
     private List<MovieTrailer> trailers;
 
-    public Movie(Integer id, String overview, String title, Double rating, String posterPath, String releaseDate) {
-        this.id = id;
+    public Movie(){
+        super();
+    }
+    public Movie(Integer moviedb_id, String overview, String title, Double rating, String posterPath, String releaseDate) {
+        super();
+        this.moviedb_id = moviedb_id;
         this.overview = overview;
         this.title = title;
         this.rating = rating;
@@ -35,7 +45,8 @@ public class Movie implements Parcelable{
     }
 
     private Movie(Parcel in){
-        this.id = in.readInt();
+        super();
+        this.moviedb_id = in.readInt();
         this.overview = in.readString();
         this.title = in.readString();
         this.rating = in.readDouble();
@@ -78,7 +89,7 @@ public class Movie implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeInt(moviedb_id);
         dest.writeString(overview);
         dest.writeString(title);
         dest.writeDouble(rating);
@@ -99,5 +110,11 @@ public class Movie implements Parcelable{
         }
 
     };
+
+    public void favorite() {
+        this.favorite = !favorite;
+        this.save();
+    }
+
 
 }

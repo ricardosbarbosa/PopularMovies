@@ -17,12 +17,16 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.github.ricardosbarbosa.popularmovies.interfaces.AsyncTaskDelegate;
-import com.github.ricardosbarbosa.popularmovies.sync.MovieDetailsService;
-import com.github.ricardosbarbosa.popularmovies.models.Movie;
+import com.activeandroid.ActiveAndroid;
+import com.activeandroid.Configuration;
+import com.activeandroid.query.Select;
+import com.facebook.stetho.Stetho;
+import com.github.ricardosbarbosa.popularmovies.R;
 import com.github.ricardosbarbosa.popularmovies.adapters.MovieAdapter;
 import com.github.ricardosbarbosa.popularmovies.helpers.NetworkUtils;
-import com.github.ricardosbarbosa.popularmovies.R;
+import com.github.ricardosbarbosa.popularmovies.interfaces.AsyncTaskDelegate;
+import com.github.ricardosbarbosa.popularmovies.models.Movie;
+import com.github.ricardosbarbosa.popularmovies.sync.MovieDetailsService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +46,17 @@ public class MovieListActivity extends AppCompatActivity implements AsyncTaskDel
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(this)
+                .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
+                        .build()
+        );
+
+        Configuration.Builder config = new Configuration.Builder(this);
+        config.addModelClasses(Movie.class);
+        ActiveAndroid.initialize(config.create());
+
         setContentView(R.layout.activity_movie_list);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -66,11 +81,20 @@ public class MovieListActivity extends AppCompatActivity implements AsyncTaskDel
 
         //Se há	conexão disponível
         if (NetworkUtils.isNetworkConnected(context)) {
-            //Aqui fazemos a chamada ao servico responsavel por carregar os filmes de acordo com as preferencias do usuario
-            MovieDetailsService moviewDbTask = new MovieDetailsService(context, this);
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             String filter = sharedPreferences.getString(getString(R.string.pref_filter_key), getString(R.string.pref_filter_default));
-            moviewDbTask.execute(filter);
+
+            if (filter.equals(getString(R.string.pref_filter_favorites))) {
+                List<Movie> favoritesMovies = new Select()
+                        .from(Movie.class)
+                        .where("favorite = ?", true)
+                        .execute();
+                this.processFinish(favoritesMovies);
+            }else {
+                //Aqui fazemos a chamada ao servico responsavel por carregar os filmes de acordo com as preferencias do usuario
+                MovieDetailsService moviewDbTask = new MovieDetailsService(context, this);
+                moviewDbTask.execute(filter);
+            }
         } else {
             //Se não há	conexão disponível, exibe a mensagem
             View view = this.findViewById(R.id.movie_list);

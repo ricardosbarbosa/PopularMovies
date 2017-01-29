@@ -2,15 +2,18 @@ package com.github.ricardosbarbosa.popularmovies.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
-import com.github.ricardosbarbosa.popularmovies.models.Movie;
-import com.github.ricardosbarbosa.popularmovies.fragments.MovieDetailFragment;
+import com.activeandroid.query.Select;
 import com.github.ricardosbarbosa.popularmovies.R;
+import com.github.ricardosbarbosa.popularmovies.fragments.MovieDetailFragment;
+import com.github.ricardosbarbosa.popularmovies.models.Movie;
 
 /**
  * An activity representing a single Movie detail screen. This
@@ -36,6 +39,36 @@ public class MovieDetailActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        movie = (Movie) getIntent().getParcelableExtra(Movie.PARCELABLE_KEY);
+
+        if (movie!= null ) {
+            Movie movieFromDb = new Select()
+                    .from(Movie.class)
+                    .where("moviedb_id = ?", movie.moviedb_id)
+                    .executeSingle();
+
+            if (movieFromDb != null) {
+                this.movie = movieFromDb;
+            }
+        }
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setImageResource(
+                movie.favorite ? android.R.drawable.star_big_on :android.R.drawable.star_big_off
+        );
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (movie!= null) {
+                    movie.favorite();
+                    fab.setImageResource(
+                            movie.favorite ? android.R.drawable.star_big_on :android.R.drawable.star_big_off
+                    );
+                }
+
+//                Snackbar.make(view, "Movi", Snackbar.LENGTH_LONG).show();
+            }
+        });
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity
         // (e.g. when rotating the screen from portrait to landscape).
