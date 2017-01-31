@@ -13,7 +13,7 @@
         android:padding="16dp"
         android:textIsSelectable="true"
         tools:context=".fragments.MovieDetailFragment"
-        android:text="Titulo"/>
+        tools:text="Titulo"/>
 
     <ImageView
         android:id="@+id/movie_poster"
@@ -24,20 +24,20 @@
         android:id="@+id/movie_release_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Release Date"
+        tools:text="Release Date"
         />
 
     <TextView
         android:id="@+id/movie_rate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rating"/>
+        tools:text="Rating"/>
 
     <TextView
         android:id="@+id/movie_overview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Overview"/>
+        tools:text="Overview"/>
 
     <android.support.v7.widget.RecyclerView 
         android:layout_width="match_parent"
