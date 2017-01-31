@@ -9,11 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.activeandroid.query.Select;
 import com.github.ricardosbarbosa.popularmovies.R;
 import com.github.ricardosbarbosa.popularmovies.fragments.MovieDetailFragment;
 import com.github.ricardosbarbosa.popularmovies.models.Movie;
+import com.squareup.picasso.Picasso;
 
 /**
  * An activity representing a single Movie detail screen. This
@@ -55,6 +57,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         fab.setImageResource(
                 movie.favorite ? android.R.drawable.star_big_on :android.R.drawable.star_big_off
         );
+
+        ImageView imageViewToolbar =  (ImageView) findViewById(R.id.image_movie_poster_toolbar);
+        Picasso.with(this).load(movie.getFullPosterPath()).into(imageViewToolbar);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
