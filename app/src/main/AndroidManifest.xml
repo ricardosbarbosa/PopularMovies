@@ -12,6 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <provider
+            android:authorities="com.github.ricardosbarbosa.popularmovies.app"
+            android:name=".database.MovieDataProvider" />
+
         <meta-data android:name="AA_DB_NAME" android:value="popularmovies.db" />
         <meta-data android:name="AA_DB_VERSION" android:value="1" />
 
@@ -37,6 +41,7 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings" />
+
     </application>
 
 </manifest>

@@ -3,7 +3,6 @@ package com.github.ricardosbarbosa.popularmovies.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
@@ -11,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "Movies")
-public class Movie extends Model implements Parcelable{
+public class Movie implements Parcelable{
 
     public static final String PARCELABLE_KEY = "movie";
 
@@ -32,7 +31,7 @@ public class Movie extends Model implements Parcelable{
     public Movie(){
         super();
     }
-    public Movie(Integer moviedb_id, String overview, String title, Double rating, String posterPath, String releaseDate) {
+    public Movie(Integer moviedb_id, String overview, String title, Double rating, String posterPath, String releaseDate, boolean favorite) {
         super();
         this.moviedb_id = moviedb_id;
         this.overview = overview;
@@ -42,6 +41,7 @@ public class Movie extends Model implements Parcelable{
         this.releaseDate = releaseDate;
         this.reviews = new ArrayList<MovieReview>();
         this.trailers = new ArrayList<MovieTrailer>();
+        this.favorite = favorite;
     }
 
     private Movie(Parcel in){
@@ -110,11 +110,5 @@ public class Movie extends Model implements Parcelable{
         }
 
     };
-
-    public void favorite() {
-        this.favorite = !favorite;
-        this.save();
-    }
-
 
 }

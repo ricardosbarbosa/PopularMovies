@@ -1,6 +1,10 @@
 package com.github.ricardosbarbosa.popularmovies.activities;
 
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NavUtils;
@@ -11,8 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.activeandroid.query.Select;
 import com.github.ricardosbarbosa.popularmovies.R;
+import com.github.ricardosbarbosa.popularmovies.database.MovieContract;
 import com.github.ricardosbarbosa.popularmovies.fragments.MovieDetailFragment;
 import com.github.ricardosbarbosa.popularmovies.models.Movie;
 import com.squareup.picasso.Picasso;
@@ -44,12 +48,24 @@ public class MovieDetailActivity extends AppCompatActivity {
         movie = (Movie) getIntent().getParcelableExtra(Movie.PARCELABLE_KEY);
 
         if (movie!= null ) {
-            Movie movieFromDb = new Select()
-                    .from(Movie.class)
-                    .where("moviedb_id = ?", movie.moviedb_id)
-                    .executeSingle();
+            Cursor movieCursor = this.getContentResolver().query(
+                    MovieContract.MovieEntry.CONTENT_URI,
+                    null,
+                    "moviedb_id = ?",
+                    new String[]{movie.moviedb_id.toString()},
+                    null
+            );
 
-            if (movieFromDb != null) {
+            if (movieCursor.moveToFirst()) {
+                Integer moviddb_id = movieCursor.getInt(movieCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_DB_ID));
+                String title = movieCursor.getString(movieCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_DB_ID));
+                String overview = movieCursor.getString(movieCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_DB_ID));
+                Double rating = movieCursor.getDouble(movieCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_DB_ID));
+                String posterPath = movieCursor.getString(movieCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_DB_ID));
+                String release = movieCursor.getString(movieCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_DB_ID));
+                boolean favorite = movieCursor.getInt(movieCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE)) > 0 ;
+                Movie movieFromDb = new Movie(moviddb_id, title, overview, rating, posterPath, release, favorite);
+
                 this.movie = movieFromDb;
             }
         }
@@ -65,7 +81,10 @@ public class MovieDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (movie!= null) {
-                    movie.favorite();
+//                    movie.favorite();
+
+                    movie.favorite = !movie.favorite;
+                    favoriteMovie(movie.moviedb_id, movie.title, movie.overview, movie.releaseDate, movie.rating, movie.favorite, movie.posterPath);
                     fab.setImageResource(
                             movie.favorite ? android.R.drawable.star_big_on :android.R.drawable.star_big_off
                     );
@@ -114,5 +133,72 @@ public class MovieDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public long favoriteMovie(Integer moviedb_id, String title, String overview, String release_date,
+                     double rating, boolean favorite, String poster_path) {
+        long movieId;
+
+        // First, check if the location with this city name exists in the db
+        Cursor movieCursor = this.getContentResolver().query(
+                MovieContract.MovieEntry.CONTENT_URI,
+                new String[]{MovieContract.MovieEntry._ID},
+                MovieContract.MovieEntry.COLUMN_MOVIE_DB_ID + " = ?",
+                new String[]{moviedb_id.toString()},
+                null);
+
+        if (movieCursor.moveToFirst()) {
+            //update
+
+            // Now that the content provider is set up, inserting rows of data is pretty simple.
+            // First create a ContentValues object to hold the data you want to insert.
+            ContentValues locationValues = new ContentValues();
+
+            locationValues.put(MovieContract.MovieEntry.COLUMN_FAVORITE, favorite);
+
+            // Finally, insert location data into the database.
+            int rowsUpdated = this.getContentResolver().update(
+                    MovieContract.MovieEntry.CONTENT_URI,
+                    locationValues,
+                    MovieContract.MovieEntry.COLUMN_MOVIE_DB_ID + " = ?",
+                    new String[]{moviedb_id.toString()}
+            );
+
+            if (rowsUpdated != 1) {
+                int movieIdIndex = movieCursor.getColumnIndex(MovieContract.MovieEntry._ID);
+                movieId = movieCursor.getLong(movieIdIndex);
+            }else  {
+                movieId = -1;
+            }
+
+        } else {
+            // Now that the content provider is set up, inserting rows of data is pretty simple.
+            // First create a ContentValues object to hold the data you want to insert.
+            ContentValues locationValues = new ContentValues();
+
+            // Then add the data, along with the corresponding name of the data type,
+            // so the content provider knows what kind of value is being inserted.
+            locationValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_DB_ID, moviedb_id);
+            locationValues.put(MovieContract.MovieEntry.COLUMN_TITLE, title);
+            locationValues.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, overview);
+            locationValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, release_date);
+            locationValues.put(MovieContract.MovieEntry.COLUMN_RATING, rating);
+            locationValues.put(MovieContract.MovieEntry.COLUMN_FAVORITE, favorite);
+            locationValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, poster_path);
+
+            // Finally, insert location data into the database.
+            Uri insertedUri = this.getContentResolver().insert(
+                    MovieContract.MovieEntry.CONTENT_URI,
+                    locationValues
+            );
+
+            // The resulting URI contains the ID for the row.  Extract the locationId from the Uri.
+            movieId = ContentUris.parseId(insertedUri);
+        }
+
+        movieCursor.close();
+        // Wait, that worked?  Yes!
+        return movieId;
     }
 }

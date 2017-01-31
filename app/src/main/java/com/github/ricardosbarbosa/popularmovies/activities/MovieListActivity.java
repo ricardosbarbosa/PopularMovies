@@ -3,6 +3,8 @@ package com.github.ricardosbarbosa.popularmovies.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -17,12 +19,11 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.activeandroid.ActiveAndroid;
-import com.activeandroid.Configuration;
-import com.activeandroid.query.Select;
 import com.facebook.stetho.Stetho;
 import com.github.ricardosbarbosa.popularmovies.R;
 import com.github.ricardosbarbosa.popularmovies.adapters.MovieAdapter;
+import com.github.ricardosbarbosa.popularmovies.database.MovieContract;
+import com.github.ricardosbarbosa.popularmovies.database.MovieContract.MovieEntry;
 import com.github.ricardosbarbosa.popularmovies.helpers.NetworkUtils;
 import com.github.ricardosbarbosa.popularmovies.interfaces.AsyncTaskDelegate;
 import com.github.ricardosbarbosa.popularmovies.models.Movie;
@@ -59,9 +60,9 @@ public class MovieListActivity extends AppCompatActivity implements AsyncTaskDel
                         .build()
         );
 
-        Configuration.Builder config = new Configuration.Builder(this);
-        config.addModelClasses(Movie.class);
-        ActiveAndroid.initialize(config.create());
+//        Configuration.Builder config = new Configuration.Builder(this);
+//        config.addModelClasses(Movie.class);
+//        ActiveAndroid.initialize(config.create());
 
         setContentView(R.layout.activity_movie_list);
 
@@ -109,10 +110,11 @@ public class MovieListActivity extends AppCompatActivity implements AsyncTaskDel
             String filter = sharedPreferences.getString(getString(R.string.pref_filter_key), getString(R.string.pref_filter_default));
 
             if (filter.equals(getString(R.string.pref_filter_favorites))) {
-                List<Movie> favoritesMovies = new Select()
-                        .from(Movie.class)
-                        .where("favorite = ?", true)
-                        .execute();
+//                List<Movie> favoritesMovies = new Select()
+//                        .from(Movie.class)
+//                        .where("favorite = ?", true)
+//                        .execute();
+                List<Movie> favoritesMovies = consultarFavoritos();
                 this.processFinish(favoritesMovies);
             }else {
                 //Aqui fazemos a chamada ao servico responsavel por carregar os filmes de acordo com as preferencias do usuario
@@ -134,6 +136,41 @@ public class MovieListActivity extends AppCompatActivity implements AsyncTaskDel
         }
 
 
+    }
+
+    private List<Movie> consultarFavoritos() {
+        List<Movie> movies = new ArrayList<Movie>();
+        // Sort order:  Ascending, by date.
+        String sortOrder = MovieContract.MovieEntry.COLUMN_TITLE + " ASC";
+        Uri movieFavoritesUri = MovieContract.MovieEntry.buildMovieFavorites();
+
+        // Get the joined Weather data for a specific date
+        Cursor weatherCursor = this.getContentResolver().query(
+                movieFavoritesUri,
+                null,
+                null,
+                null,
+                sortOrder
+        );
+
+//        weatherCursor.moveToFirst();
+
+        for (int i = 0; i < weatherCursor.getCount(); i++) {
+            weatherCursor.moveToNext();
+
+            Integer moviddb_id = weatherCursor.getInt(weatherCursor.getColumnIndex(MovieEntry.COLUMN_MOVIE_DB_ID));
+            String title = weatherCursor.getString(weatherCursor.getColumnIndex(MovieEntry.COLUMN_TITLE));
+            String overview = weatherCursor.getString(weatherCursor.getColumnIndex(MovieEntry.COLUMN_OVERVIEW));
+            Double rating = weatherCursor.getDouble(weatherCursor.getColumnIndex(MovieEntry.COLUMN_RATING));
+            String posterPath = weatherCursor.getString(weatherCursor.getColumnIndex(MovieEntry.COLUMN_POSTER_PATH));
+            String release = weatherCursor.getString(weatherCursor.getColumnIndex(MovieEntry.COLUMN_RELEASE_DATE));
+            boolean favorite = weatherCursor.getInt(weatherCursor.getColumnIndex(MovieEntry.COLUMN_FAVORITE)) > 0;
+            Movie m = new Movie(moviddb_id, title, overview, rating, posterPath, release, favorite);
+
+            movies.add(m);
+        }
+
+        return movies;
     }
 
 

@@ -44,7 +44,7 @@ public class MovieProcessor {
             String posterPath = movieJson.optString(POSTER_PATH);
             String releaseDate = movieJson.optString(RELEASE_DATE);
 
-            Movie movie = new Movie(id, overview, title, rating, posterPath, releaseDate);
+            Movie movie = new Movie(id, overview, title, rating, posterPath, releaseDate, false);
             resultStrs.add(movie);
         }
 
