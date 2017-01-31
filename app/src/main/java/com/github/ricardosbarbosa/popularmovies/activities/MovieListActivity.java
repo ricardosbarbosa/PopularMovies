@@ -8,12 +8,12 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.Toast;
 
@@ -41,7 +41,13 @@ import java.util.List;
  */
 public class MovieListActivity extends AppCompatActivity implements AsyncTaskDelegate {
 
-    private ArrayAdapter<Movie> arrayAdapter;
+    /**
+     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
+     * device.
+     */
+    private boolean mTwoPane;
+
+    private MovieAdapter movieAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +69,27 @@ public class MovieListActivity extends AppCompatActivity implements AsyncTaskDel
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        GridView gridView = (GridView) findViewById(R.id.movie_list);
-        assert gridView != null;
-        setupRecyclerView((GridView) gridView);
+
+
+        if (findViewById(R.id.movie_detail_container) != null) {
+            // The detail container view will be present only in the
+            // large-screen layouts (res/values-w900dp).
+            // If this view is present, then the
+            // activity should be in two-pane mode.
+            mTwoPane = true;
+        }
+
+        if (mTwoPane) {
+            RecyclerView recyclerView = (RecyclerView) findViewById(R.id.movie_list_recycle);
+            assert recyclerView != null;
+            setupRecyclerView(recyclerView);
+        }
+        else {
+            GridView gridView = (GridView) findViewById(R.id.movie_list);
+            assert gridView != null;
+            setupRecyclerView(gridView);
+        }
+
 
     }
 
@@ -135,9 +159,14 @@ public class MovieListActivity extends AppCompatActivity implements AsyncTaskDel
 
     }
 
+    private void setupRecyclerView(@NonNull final RecyclerView recyclerView) {
+        movieAdapter = new MovieAdapter(this, new ArrayList<Movie>(),mTwoPane);
+        recyclerView.setAdapter(movieAdapter);
+    }
+
     private void setupRecyclerView(@NonNull final GridView gridView) {
-        arrayAdapter = new MovieAdapter(this, new ArrayList<Movie>());
-        gridView.setAdapter(arrayAdapter);
+        movieAdapter = new MovieAdapter(this, new ArrayList<Movie>(), mTwoPane);
+        gridView.setAdapter(movieAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -156,8 +185,14 @@ public class MovieListActivity extends AppCompatActivity implements AsyncTaskDel
         if(output != null){
             List<Movie> movies = (List<Movie>) output;
 
-            GridView gridView = (GridView) findViewById(R.id.movie_list);
-            gridView.setAdapter(new MovieAdapter(this, new ArrayList<Movie>(movies) ));
+            if (mTwoPane) {
+                RecyclerView gridView = (RecyclerView) findViewById(R.id.movie_list_recycle);
+                gridView.setAdapter(new MovieAdapter(this, new ArrayList<Movie>(movies), mTwoPane ));
+            }else {
+                GridView gridView = (GridView) findViewById(R.id.movie_list);
+                gridView.setAdapter(new MovieAdapter(this, new ArrayList<Movie>(movies), mTwoPane ));
+            }
+
         }else{
             Toast.makeText(this, R.string.no_internet_connection, Toast.LENGTH_LONG).show();
         }
